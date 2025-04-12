@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+  <meta charset="UTF-8">
+  <title>Админ-панель</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <script src="https://cdn.tailwindcss.com"></script>
+</head>
+<body class="bg-gray-950 text-white font-sans min-h-screen flex flex-col justify-between">
+  <div class="p-4 text-center text-3xl font-bold text-yellow-400">🛠 Админ-панель</div>
+  <div class="p-4 max-w-2xl mx-auto text-center" id="adminPanel">
+    <p class="text-lg">Загрузка...</p>
+  </div>
+
+  <!-- Нижнее меню -->
+  <div class="bg-black/80 text-yellow-300 text-sm md:text-lg flex justify-around py-3 border-t border-yellow-700">
+    <a href="/index.html">🏠 Главная</a>
+    <a href="/upgrades.html">⚙ Улучшения</a>
+    <a href="/stats.html">📊 Статистика</a>
+    <a href="/referral.html">🎁 Рефералка</a>
+    <a href="/admin.html">🛠 Админка</a>
+  </div>
+
+  <script>
+    const container = document.getElementById("adminPanel");
+    const isAdmin = localStorage.getItem("isAdmin") === "true";
+
+    if (isAdmin) {
+      container.innerHTML = `
+        <div class="bg-gray-800 p-4 rounded-lg space-y-4">
+          <p class="text-xl text-green-400">Добро пожаловать, Админ!</p>
+          <button onclick="resetProgress()" class="bg-red-600 hover:bg-red-500 py-2 px-4 rounded">Сбросить прогресс</button>
+        </div>
+      `;
+    } else {
+      container.innerHTML = `<p class="text-red-500 text-xl font-bold">Доступ запрещён!</p>`;
+    }
+
+    function resetProgress() {
+      localStorage.clear();
+      alert("Прогресс сброшен. Перезагрузите страницу.");
+    }
+  </script>
+</body>
+</html>
