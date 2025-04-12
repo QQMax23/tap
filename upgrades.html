@@ -1,0 +1,96 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+  <meta charset="UTF-8">
+  <title>Улучшения</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <script src="https://cdn.tailwindcss.com"></script>
+</head>
+<body class="bg-gray-950 text-white font-sans min-h-screen flex flex-col justify-between">
+  <div class="p-4 text-center text-3xl font-bold text-yellow-400">⚙ Улучшения</div>
+  <div class="p-4 space-y-4 max-w-2xl mx-auto">
+    <div class="text-right text-yellow-300 text-lg mb-2">Твои монеты: <span id="userCoins">0</span> 🪙</div>
+    <div id="upgradeList" class="grid gap-4"></div>
+  </div>
+
+  <!-- Нижнее меню навигации -->
+  <div class="bg-black/80 text-yellow-300 text-sm md:text-lg flex justify-around py-3 border-t border-yellow-700">
+    <a href="/index.html">🏠 Главная</a>
+    <a href="/upgrades.html">⚙ Улучшения</a>
+    <a href="/stats.html">📊 Статистика</a>
+    <a href="/referral.html">🎁 Рефералка</a>
+    <a href="/admin.html">🛠 Админка</a>
+  </div>
+
+  <script>
+    let coins = parseInt(localStorage.getItem("coins")) || 0;
+    let upgradeEffects = JSON.parse(localStorage.getItem("upgradeEffects")) || {};
+    let purchased = JSON.parse(localStorage.getItem("purchasedUpgrades")) || [];
+
+    const userCoins = document.getElementById("userCoins");
+    const list = document.getElementById("upgradeList");
+    userCoins.textContent = coins;
+
+    const upgrades = [
+      { name: "Перчатка новичка", cost: 10, icon: "🧤", effect: { extraTapValue: 1 } },
+      { name: "Острый палец", cost: 20, icon: "🗡️", effect: { extraTapValue: 1 } },
+      { name: "Тап-браслет из бронзы", cost: 50, icon: "📿", effect: { extraTapValue: 1 } },
+      { name: "Поддержка гномов", cost: 100, icon: "⚒️" },
+      { name: "Закалённая кожа", cost: 150, icon: "🛡️" },
+      { name: "Два пальца", cost: 200, icon: "✌️", effect: { extraTapValue: 2 } },
+      { name: "Палец с кольцом мага", cost: 999, icon: "💍", effect: { extraTapValue: 3 } },
+      { name: "Наёмный колдун-тапер", cost: 7500, icon: "🧙", effect: { extraTapValue: 5 } },
+      { name: "Рука дракона", cost: 50000, icon: "🐉", effect: { extraTapValue: 10 } },
+      { name: "Книга Великого Тапа", cost: 20000000, icon: "📖", effect: { extraTapValue: 100 } },
+      { name: "Корона Вечного Тапа", cost: 100000000, icon: "👑", effect: { extraTapValue: 1000 } }
+    ];
+
+    function applyUpgradeEffects(effect) {
+      for (const key in effect) {
+        if (!upgradeEffects[key]) upgradeEffects[key] = 0;
+        upgradeEffects[key] += effect[key];
+      }
+      localStorage.setItem("upgradeEffects", JSON.stringify(upgradeEffects));
+    }
+
+    upgrades.forEach(upg => {
+      const item = document.createElement("div");
+      item.className = "bg-gray-800 p-4 rounded-lg flex justify-between items-center shadow hover:scale-[1.02] transition";
+
+      const bought = purchased.includes(upg.name);
+
+      item.innerHTML = `
+        <div class="flex items-center gap-4">
+          <div class="text-4xl">${upg.icon || "✨"}</div>
+          <div>
+            <div class="text-lg font-semibold">${upg.name}</div>
+            <div class="text-yellow-300">💰 ${upg.cost.toLocaleString()} монет</div>
+          </div>
+        </div>
+        <button class="${bought ? 'bg-green-600 cursor-not-allowed' : 'bg-yellow-500 hover:bg-yellow-400'} text-black font-bold py-2 px-4 rounded" ${bought ? 'disabled' : ''}>${bought ? 'Куплено' : 'Купить'}</button>
+      `;
+
+      const button = item.querySelector("button");
+      if (!bought) {
+        button.addEventListener("click", () => {
+          if (coins >= upg.cost) {
+            coins -= upg.cost;
+            userCoins.textContent = coins;
+            localStorage.setItem("coins", coins);
+            if (upg.effect) applyUpgradeEffects(upg.effect);
+            purchased.push(upg.name);
+            localStorage.setItem("purchasedUpgrades", JSON.stringify(purchased));
+            button.disabled = true;
+            button.textContent = "Куплено";
+            button.className = "bg-green-600 cursor-not-allowed text-black font-bold py-2 px-4 rounded";
+          } else {
+            alert("Недостаточно монет!");
+          }
+        });
+      }
+
+      list.appendChild(item);
+    });
+  </script>
+</body>
+</html>
