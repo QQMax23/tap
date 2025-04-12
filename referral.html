@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+  <meta charset="UTF-8">
+  <title>Реферальная система</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <script src="https://cdn.tailwindcss.com"></script>
+</head>
+<body class="bg-gray-950 text-white font-sans min-h-screen flex flex-col justify-between">
+  <div class="p-4 text-center text-3xl font-bold text-yellow-400">🎁 Реферальная система</div>
+  <div class="p-4 space-y-4 max-w-2xl mx-auto text-center">
+    <p class="text-lg">Приглашай друзей и получай <span class="text-yellow-400 font-bold">1000 монет</span> за каждого!</p>
+    <div class="bg-gray-800 p-4 rounded-lg">
+      <p class="mb-2">Твоя ссылка:</p>
+      <input type="text" id="refLink" readonly class="w-full p-2 rounded bg-gray-700 text-white text-center">
+      <button onclick="copyLink()" class="mt-2 bg-yellow-500 text-black font-bold py-2 px-4 rounded hover:bg-yellow-400">Скопировать</button>
+    </div>
+  </div>
+
+  <!-- Нижнее меню -->
+  <div class="bg-black/80 text-yellow-300 text-sm md:text-lg flex justify-around py-3 border-t border-yellow-700">
+    <a href="/index.html">🏠 Главная</a>
+    <a href="/upgrades.html">⚙ Улучшения</a>
+    <a href="/stats.html">📊 Статистика</a>
+    <a href="/referral.html">🎁 Рефералка</a>
+    <a href="/admin.html">🛠 Админка</a>
+  </div>
+
+  <script>
+    const username = localStorage.getItem("username") || "guest";
+    const refLink = `${location.origin}/index.html?ref=${username}`;
+    document.getElementById("refLink").value = refLink;
+
+    function copyLink() {
+      navigator.clipboard.writeText(refLink);
+      alert("Ссылка скопирована! 🔗");
+    }
+  </script>
+</body>
+</html>
